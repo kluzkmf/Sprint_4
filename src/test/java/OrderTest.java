@@ -1,113 +1,112 @@
-import model.MainPage;
-import model.OrderPage;
-import org.junit.After;
+import model.*;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
+public class OrderTest extends BaseTest {
 
-public class OrderTest {
+    // Набор тестовых данных для теста заказа в шапке
+    private static final String NAME_HEADER_BUTTON_CHECK = "Венедикт";
+    private static final String SECOND_NAME_HEADER_BUTTON_CHECK = "Борщёвский";
+    private static final String ADDRESS_HEADER_BUTTON_CHECK = "г. Пушкино, ул. Пушкинское поле, д. 2";
+    private static final String STATION_HEADER_BUTTON_CHECK = "Те";
+    private static final String PHONE_HEADER_BUTTON_CHECK = "+79955544332";
+    private static final String DELIVERY_DATE_HEADER_BUTTON_CHECK = "19.02.2024";
+    private static final String COMMIT_HEADER_BUTTON_CHECK = "И печеньки";
 
-    // Набор тестовых данных для теста №1
-    private static final String NAME_1 = "Венедикт";
-    private static final String SECOND_NAME_1 = "Борщёвский";
-    private static final String ADDRESS_1 = "г. Пушкино, ул. Пушкинское поле, д. 2";
-    private static final String STATION_1 = "Те";
-    private static final String PHONE_1 = "+79955544332";
-    private static final String DELIVERY_DATE_1 = "19.02.2024";
-    private static final String COMMIT_1 = "И печеньки";
+    // Набор тестовых данных для теста заказа в лендинге
+    private static final String NAME_LENDING_BUTTON_CHECK = "Поряшек";
+    private static final String SECOND_NAME_LENDING_BUTTON_CHECK = "Висконсин";
+    private static final String ADDRESS_LENDING_BUTTON_CHECK = "г. Новороссийск, ул. Ленина, д. 14";
+    private static final String STATION_LENDING_BUTTON_CHECK = "Университет";
+    private static final String PHONE_LENDING_BUTTON_CHECK = "+18086000138";
+    private static final String DELIVERY_DATE_LENDING_BUTTON_CHECK = "01.01.2025";
+    private static final String COMMIT_LENDING_BUTTON_CHECK = "Хорошее настроение";
 
-    // Набор тестовых данных для теста №2
-    private static final String NAME_2 = "Поряшек";
-    private static final String SECOND_NAME_2 = "Висконсин";
-    private static final String ADDRESS_2 = "г. Новороссийск, ул. Ленина, д. 14";
-    private static final String STATION_2 = "Университет";
-    private static final String PHONE_2 = "+18086000138";
-    private static final String DELIVERY_DATE_2 = "01.01.2025";
-    private static final String COMMIT_2 = "Хорошее настроение";
-
-    public WebDriver driver;
-    @After
-    public void tearDown() {
-        driver.quit();
-    }
-
-    // Тест №1
-    @Test
-    public void checkOrder_headerButton() {
-        driver = new ChromeDriver();
+    //Метод для заполнения формы заказа
+    private boolean makeOrder(EOrderButtonBy orderButtonBy,
+                           String name,
+                           String secondName,
+                           String address,
+                           String station,
+                           Keys arrowKey,
+                           String phone,
+                           String deliveryDate,
+                           EDaysPeriodBy daysPeriodBy,
+                           EColorCheckBoxBy colorCheckBoxBy,
+                           String comment
+                           ) {
         MainPage mainPage = new MainPage(driver);
         mainPage
                 .open()
                 .hideCookieNotify();
-        mainPage.getHeaderOrderButton().click();
-        // Задержка открытия страницы
+        //Нажимаем на кнопку "Заказать"
+        mainPage.getOrderButton(orderButtonBy).click();
         OrderPage orderPage = new OrderPage(driver);
 
         // Заполняем форму "Для кого самокат"
         orderPage
-                .enterName(NAME_1)
-                .enterSecondName(SECOND_NAME_1)
-                .enterAddress(ADDRESS_1)
-                .enterStation(STATION_1).sendArrowUpKeyStation().sendEnterKeyStation()
-                .enterPhone(PHONE_1)
+                .enterName(name)
+                .enterSecondName(secondName)
+                .enterAddress(address)
+                .enterStation(station).sendStationInputKeyStation(arrowKey).sendEnterKeyStation()
+                .enterPhone(phone)
                 .clickNextButton();
+
         // Заполняем форму "Про аренду"
         orderPage
-                .enterDeliveryDate(DELIVERY_DATE_1)
+                .enterDeliveryDate(deliveryDate)
                 .sendEnterKeyDeliveryDate()
                 .clickRentPeriodDropdown()
-                .selectOneDayPeriod()
-                .markGreyCheckbox()
-                .enterComment(COMMIT_1)
+                .selectDaysPeriod(daysPeriodBy)
+                .markColorCheckbox(colorCheckBoxBy)
+                .enterComment(comment)
                 .clickOrderButton()
                 .clickYesButton();
 
-        Assert.assertTrue(orderPage.isDisplayedSuccess());
+        return orderPage.isDisplayedSuccess();
     }
 
-    // Тест №2
+    // Тест заказа из шапки
     @Test
-    public void checkOrder_lendingButton() {
-        driver = new FirefoxDriver();
-        MainPage mainPage = new MainPage(driver);
-        mainPage
-                .open()
-                .hideCookieNotify();
-        mainPage.getHeaderOrderButton().click();
-        // Задержка открытия страницы
-        OrderPage orderPage = new OrderPage(driver);
+    public void checkOrderHeaderButton() {
 
-        // Заполняем форму "Для кого самокат"
-        orderPage
-                .enterName(NAME_2)
-                .enterSecondName(SECOND_NAME_2)
-                .enterAddress(ADDRESS_2)
-                .enterStation(STATION_2).sendArrowUpKeyStation().sendEnterKeyStation()
-                .enterPhone(PHONE_2)
-                .clickNextButton();
-        // Заполняем форму "Про аренду"
-        orderPage
-                .enterDeliveryDate(DELIVERY_DATE_2)
-                .sendEnterKeyDeliveryDate()
-                .clickRentPeriodDropdown()
-                .selectSevenDaysPeriod()
-                .markBlackCheckbox()
-                .enterComment(COMMIT_2)
-                .clickOrderButton()
-                .clickYesButton();
+        boolean checkVisibleSuccess = makeOrder(
+                EOrderButtonBy.HEADER,
+                NAME_HEADER_BUTTON_CHECK,
+                SECOND_NAME_HEADER_BUTTON_CHECK,
+                ADDRESS_HEADER_BUTTON_CHECK,
+                STATION_HEADER_BUTTON_CHECK,
+                Keys.ARROW_DOWN,
+                PHONE_HEADER_BUTTON_CHECK,
+                DELIVERY_DATE_HEADER_BUTTON_CHECK,
+                EDaysPeriodBy.ONE,
+                EColorCheckBoxBy.GREY,
+                COMMIT_HEADER_BUTTON_CHECK
+                );
 
-        Assert.assertTrue(orderPage.isDisplayedSuccess());
+        Assert.assertTrue(checkVisibleSuccess);
+    }
+
+    // Тест заказа из лендинга
+    @Test
+    public void checkOrderLendingButton() {
+
+        boolean checkVisibleSuccess = makeOrder(
+                EOrderButtonBy.LENDING,
+                NAME_LENDING_BUTTON_CHECK,
+                SECOND_NAME_LENDING_BUTTON_CHECK,
+                ADDRESS_LENDING_BUTTON_CHECK,
+                STATION_LENDING_BUTTON_CHECK,
+                Keys.ARROW_UP,
+                PHONE_LENDING_BUTTON_CHECK,
+                DELIVERY_DATE_LENDING_BUTTON_CHECK,
+                EDaysPeriodBy.SEVEN,
+                EColorCheckBoxBy.BLACK,
+                COMMIT_LENDING_BUTTON_CHECK
+        );
+
+        Assert.assertTrue(checkVisibleSuccess);
     }
 
 }

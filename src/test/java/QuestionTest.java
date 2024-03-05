@@ -15,7 +15,7 @@ import java.util.Collection;
 */
 
 @RunWith(Parameterized.class)
-public class QuestionTest extends ATest {
+public class QuestionTest extends BaseTest {
 
     // Тест №1. Ожидаемый вопрос:
     private static final String EXPECTED_HOW_MUCH_QUESTION = "Сколько это стоит? И как оплатить?";

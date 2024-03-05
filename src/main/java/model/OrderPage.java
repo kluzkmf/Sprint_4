@@ -3,9 +3,8 @@ package model;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-public class OrderPage extends APage {
+public class OrderPage extends BasePage {
 
     // Для кого самокат
     // Поле "Имя"
@@ -26,15 +25,17 @@ public class OrderPage extends APage {
     private By DeliveryDateInput = By.xpath("//input[@placeholder='* Когда привезти самокат']");
     // Поле "Срок аренды"
     private By rentPeriodDropdown = By.xpath("//div[@class='Dropdown-placeholder']");
+
     // Выбор для выпадающего списка "Срок аренды"
-    private By oneDayPeriod = By.xpath(".//div[text()='сутки']");
-    private By sevenDaysPeriod = By.xpath(".//div[text()='семеро суток']");
+    //private By oneDayPeriod = By.xpath(".//div[text()='сутки']");
+    //private By sevenDaysPeriod = By.xpath(".//div[text()='семеро суток']");
 
     // Чекбокс "чёрный жемчуг"
-    private By blackCheckbox = By.xpath("//input[@id='black']");
+    //private By blackCheckbox = By.xpath("//input[@id='black']");
     // Чекбокс "серая безысходность"
-    private By greyCheckbox = By.xpath("//input[@id='grey']");
+    //private By greyCheckbox = By.xpath("//input[@id='grey']");
     // Поле "Комментарий для курьера"
+
     private By commentInput = By.xpath("//input[@placeholder='Комментарий для курьера']");
     // Кнопка "Заказать"
     private By orderButton = By.cssSelector("div.Order_Buttons__1xGrp > button:nth-child(2)");
@@ -70,8 +71,8 @@ public class OrderPage extends APage {
         driver.findElement(stationInput).sendKeys(station);
         return this;
     }
-    public OrderPage sendArrowUpKeyStation() {
-        driver.findElement(stationInput).sendKeys(Keys.ARROW_UP);
+    public OrderPage sendStationInputKeyStation(Keys key) {
+        driver.findElement(stationInput).sendKeys(key);
         return this;
     }
 
@@ -104,7 +105,7 @@ public class OrderPage extends APage {
         driver.findElement(rentPeriodDropdown).click();
         return this;
     }
-
+/*
     public OrderPage selectOneDayPeriod() {
         driver.findElement(oneDayPeriod).click();
         return this;
@@ -114,7 +115,14 @@ public class OrderPage extends APage {
         driver.findElement(sevenDaysPeriod).click();
         return this;
     }
+*/
 
+    public OrderPage selectDaysPeriod(EDaysPeriodBy daysPeriodBy) {
+        driver.findElement(daysPeriodBy.getByDaysPeriod()).click();
+        return this;
+    }
+
+/*
     public OrderPage markBlackCheckbox() {
         driver.findElement(blackCheckbox).click();
         return this;
@@ -122,6 +130,12 @@ public class OrderPage extends APage {
 
     public OrderPage markGreyCheckbox() {
         driver.findElement(greyCheckbox).click();
+        return this;
+    }
+*/
+    //Новый метод для установки маркера выбора цвета
+    public OrderPage markColorCheckbox(EColorCheckBoxBy colorBy) {
+        driver.findElement(colorBy.getByColorCheckBox()).click();
         return this;
     }
 
